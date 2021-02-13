@@ -12,20 +12,32 @@ class TestYStream:
 
     def test_fail_stream_folder(self):
         """ Test stream folder exists """
+        ys = YStream('not-existent-stream')
         with pytest.raises(StreamFolderNotFoud):
-            YStream('not-existent-stream')
+            ys.load()
 
     def test_no_data_file_stream(self):
         """ Test data file exists """
+        ys = YStream('no-data-file-stream', streams_folder=STREAMS_FOLDER)
         with pytest.raises(StreamDataFileNotFoud):
-            YStream('no-data-file-stream', streams_folder=STREAMS_FOLDER)
+            ys.load()
 
     def test_bad_json(self):
         """ Test JSON is valid """
+        ys = YStream('bad-json-stream', streams_folder=STREAMS_FOLDER)
         with pytest.raises(json.decoder.JSONDecodeError):
-            YStream('bad-json-stream', streams_folder=STREAMS_FOLDER)
+            ys.load()
 
     def test_incomplete_json_stream(self):
         """ Test JSON file include all required fields """
+        ys = YStream('incomplete-json-stream', streams_folder=STREAMS_FOLDER)
         with pytest.raises(KeyError):
-            YStream('incomplete-json-stream', streams_folder=STREAMS_FOLDER)
+            ys.load()
+        assert ys.title == "Stream without streams"
+
+    def test_good_stream(self):
+        """ Test well defined stream """
+        ys = YStream('good-stream', streams_folder=STREAMS_FOLDER)
+        ys.load()
+        assert ys.title == "Well defined stream"
+        assert ys.streams == ["https://wee.defined.org/stream"]

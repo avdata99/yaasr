@@ -14,11 +14,6 @@ class YStream:
     def __init__(self, stream_name, streams_folder=STREAMS_FOLDER):
         self.name = stream_name
         self.streams_folder = streams_folder
-        self.stream_folder = self.get_stream()
-        data = self.load()
-        self.title = data['title']
-        self.web_site = data.get('web', None)
-        self.streams = data['streams']
 
     def get_stream(self):
         """ Get the stream folder """
@@ -29,10 +24,14 @@ class YStream:
         return stream_folder
 
     def load(self):
-        """ Load the stream data """
+        """ Load and validate the stream data """
+        self.stream_folder = self.get_stream()
         data_file = os.path.join(self.stream_folder, 'data.json')
         if not os.path.isfile(data_file):
             raise StreamDataFileNotFoud(f'Data file not found {data_file}')
 
         data = json.load(open(data_file))
-        return data
+
+        self.title = data['title']
+        self.web_site = data.get('web', None)
+        self.streams = data['streams']

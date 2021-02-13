@@ -1,0 +1,34 @@
+name: Publish to Pypi
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish_to_pypi:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+
+    - name: Build
+      run: |
+        pip install wheel
+        python setup.py sdist bdist_wheel
+
+    - name: "Publish to PyPI"
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        skip_existing: true
+        verbose: true
