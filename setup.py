@@ -17,7 +17,7 @@ setuptools.setup(
     url="https://github.com/avdata99/yaasr",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License GPLv3+",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers"
