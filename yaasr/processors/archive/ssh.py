@@ -1,5 +1,5 @@
 """
-Upload through SSH 
+Upload through SSH
 """
 import logging
 import os

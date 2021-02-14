@@ -71,7 +71,7 @@ class YStream:
             for block in r.iter_content(chunk_bytes_size):
                 f.write(block)
                 logger.debug('  ... chunk saved')
-                
+
                 now = datetime.now()
                 if now - start >= timedelta(seconds=total_seconds):
                     logger.info('Finish recording')
