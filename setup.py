@@ -26,5 +26,10 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'requests>=2.25.1'
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'yaasr=yaasr.terminal:main',
+            ],
+    },
 )

@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 .vscode/
+*.aac
 *.mp3
 *.mp4
 *.ogg

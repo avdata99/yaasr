@@ -17,9 +17,26 @@ Install
 pip install yaasr
 ```
 
-Load a pre-defined stream
+### From Python
+
+Load a pre-defined stream and save 5 audio chunks of 60 seconds
 
 ```python
+from yaasr.recorder.stream import YStream
+from yaasr.processors.audio.reduce import reformat
+from yaasr.processors.archive.ssh import upload_ssh
+
+ys = YStream('radio-universidad-cordoba-argentina')
+ys.load()
+ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
+```
+
+You will see new audio files at `/yaasr/streams/radio-universidad-cordoba-argentina`
+
+Post process audio to MP3 16Khz and upload via ssh the result cleaning local files after the process
+
+```python
+import logging.config
 from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
 from yaasr.processors.archive.ssh import upload_ssh
@@ -97,3 +114,48 @@ Results
 ```
 
 ![ssh files](docs/img/sshed.png)
+
+### From command line
+
+List all available streams
+
+```
+$ yaasr ls
+radio-bio-bio-santiago-chile: https://unlimited4-us.dps.live/biobiosantiago/aac/icecast.audio
+radio-universidad-cordoba-argentina: https://sp4.colombiatelecom.com.co:10995/stream
+```
+
+Info about a stream
+
+```
+$ yaasr info --stream radio-bio-bio-santiago-chile
+{
+    "title": "Bio Bio Santiago de Chile",
+    "web": "https://vivo.biobiochile.cl/player/",
+    "streams": [
+        {
+            "url": "https://unlimited4-us.dps.live/biobiosantiago/aac/icecast.audio",
+            "extension": "aac"
+        }
+    ]
+}
+```
+
+Record a stream
+
+```
+$ yaasr record \
+    --stream radio-bio-bio-santiago-chile \
+    --total_seconds 90 \
+    --chunk_bytes_size 512 \
+    --chunk_time_size 30
+
+2021-02-14 18:27:20,382 - yaasr.recorder.stream - INFO - Attempt to record from https://unlimited4-us.dps.live/biobiosantiago/aac/icecast.audio
+2021-02-14 18:27:21,244 - yaasr.recorder.stream - INFO - Recording from https://unlimited4-us.dps.live/biobiosantiago/aac/icecast.audio
+2021-02-14 18:27:56,923 - yaasr.recorder.stream - INFO - 2021-02-14 18:27:56.923239 Elapsed 0:00:35.679521 Finish chunk 1274
+2021-02-14 18:27:56,924 - yaasr.recorder.stream - INFO - Chunk finished
+2021-02-14 18:28:27,132 - yaasr.recorder.stream - INFO - 2021-02-14 18:28:27.131768 Elapsed 0:01:05.888050 Finish chunk 1981
+2021-02-14 18:28:27,132 - yaasr.recorder.stream - INFO - Chunk finished
+2021-02-14 18:28:51,294 - yaasr.recorder.stream - INFO - Finish recording 2021-02-14 18:28:51.294881
+2021-02-14 18:28:51,295 - yaasr.recorder.stream - INFO - Chunk finished
+```

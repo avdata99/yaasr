@@ -35,11 +35,11 @@ class YStream:
         if not os.path.isfile(data_file):
             raise StreamDataFileNotFoud(f'Data file not found {data_file}')
 
-        data = json.load(open(data_file))
+        self.data = json.load(open(data_file))
 
-        self.title = data['title']
-        self.web_site = data.get('web', None)
-        self.streams = data['streams']
+        self.title = self.data['title']
+        self.web_site = self.data.get('web', None)
+        self.streams = self.data['streams']
 
     def record(self, total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60):
         """ Record the online stream
@@ -68,16 +68,19 @@ class YStream:
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
             last_start = start
+            c = 0
             for block in r.iter_content(chunk_bytes_size):
+                c += 1
                 f.write(block)
                 logger.debug('  ... chunk saved')
 
                 now = datetime.now()
-                if now - start >= timedelta(seconds=total_seconds):
-                    logger.info('Finish recording')
+                elapsed = now - start
+                if elapsed >= timedelta(seconds=total_seconds):
+                    logger.info(f'Finish recording {now}')
                     break
                 elif now - last_start >= timedelta(seconds=chunk_time_size):
-                    logger.info('Finish chink size')
+                    logger.info(f'{now} Elapsed {elapsed} Finish chunk {c}')
                     self.chunk_finished(stream_path)
                     last_start = datetime.now()
                     stime = last_start.strftime(self.str_chunk_time_format)
