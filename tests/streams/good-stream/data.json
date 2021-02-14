@@ -1,6 +1,7 @@
 {
     "title": "Well defined stream",
+    "web": "https://mystream.com",
     "streams": [
-        "https://wee.defined.org/stream"
+        {"url": "https://wee.defined.org/stream", "extension": "mp3"}
     ]
 }

@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 .vscode/
+*.mp3
+*.mp4
+*.ogg
+*.wav

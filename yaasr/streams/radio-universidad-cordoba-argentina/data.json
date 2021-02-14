@@ -2,6 +2,6 @@
     "title": "Radio Universidad de Córdoba",
     "web": "https://www.cba24n.com.ar/radio-universidad-am-580---cordoba",
     "streams": [
-        "https://sp4.colombiatelecom.com.co:10995/stream"
+        {"url": "https://sp4.colombiatelecom.com.co:10995/stream", "extension": "mp4"}
     ]
 }

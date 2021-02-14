@@ -23,4 +23,5 @@ Load a pre-defined stream
 from yaasr.recorder.stream import YStream
 ys = YStream('radio-universidad-cordoba-argentina')
 ys.load()
+ys.record(seconds=45)
 ```
