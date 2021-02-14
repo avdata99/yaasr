@@ -16,6 +16,9 @@ class YStream:
     def __init__(self, stream_name, streams_folder=STREAMS_FOLDER):
         self.name = stream_name
         self.streams_folder = streams_folder
+        self.str_chunk_time_format = '%Y%m%d%H%M%S'
+        # after save each audio chunk we can post-process the file, upload or anything
+        self.post_process_functions = []
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -38,8 +41,14 @@ class YStream:
         self.web_site = data.get('web', None)
         self.streams = data['streams']
 
-    def record(self, seconds=10):
-        """ Record the online stream """
+    def record(self, total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60):
+        """ Record the online stream
+
+        Params:
+            total_seconds: total time to save from the stream
+            chunk_bytes_size: chunk size to iterate over stream downloaded data
+            chunk_time_size: split the audio files is chunk with this time
+        """
         c = 0
         for stream in self.streams:
 
@@ -52,16 +61,39 @@ class YStream:
                 logger.error(f'Error connecting to stream {c} {url}: {e}')
                 continue
 
-            extension = stream.get('extension', 'mp3')
-            stream_path = os.path.join(self.stream_folder, f'stream.{extension}')
             start = datetime.now()
+            extension = stream.get('extension', 'mp3')
+            stime = start.strftime(self.str_chunk_time_format)
+            stream_path = os.path.join(self.stream_folder, f'stream-{self.name}-{stime}.{extension}')
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
-            for block in r.iter_content(1024):
+            last_start = start
+            for block in r.iter_content(chunk_bytes_size):
+                f.write(block)
                 logger.debug('  ... chunk saved')
-                if datetime.now() - start >= timedelta(seconds=seconds):
+                
+                now = datetime.now()
+                if now - start >= timedelta(seconds=total_seconds):
                     logger.info('Finish recording')
                     break
-                f.write(block)
-            self.stream_path = stream_path
+                elif now - last_start >= timedelta(seconds=chunk_time_size):
+                    logger.info('Finish chink size')
+                    self.chunk_finished(stream_path)
+                    last_start = datetime.now()
+                    stime = last_start.strftime(self.str_chunk_time_format)
+                    stream_path = os.path.join(self.stream_folder, f'stream-{self.name}-{stime}.{extension}')
+                    f.close()
+                    f = open(stream_path, 'wb')
+
+            # last chunk
+            self.chunk_finished(stream_path)
             return stream_path
+
+    def chunk_finished(self, stream_path):
+        """ An audio chunk finished. We can post-process and/or upload """
+        logger.info('Chunk finished')
+        for ppf in self.post_process_functions:
+            fn = ppf['fn']
+            logger.info(f'Running {fn}')
+            params = ppf.get('params', {})
+            stream_path = fn(stream_path, **params)

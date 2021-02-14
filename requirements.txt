@@ -1,1 +1,8 @@
 requests>=2.25.1
+
+# TODO make optional
+
+# Process audios
+pydub>=0.24.1
+# Upload ssh
+paramiko>=2.7.2
