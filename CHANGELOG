@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.2] 2021-02-14
+
+### Post processing audios
+Allow post-process functions:
+
+ - Allow to reformat audios (e.g. mp3 bitrate 16K)
+ - Allow upload final audios using SSH
+ - Allow delete previous version file after post-process
+
+
 
 ## [0.2.1] 2021-02-13
 
