@@ -1,0 +1,7 @@
+{
+    "title": "Bio Bio Santiago de Chile",
+    "web": "https://vivo.biobiochile.cl/player/",
+    "streams": [
+        {"url": "https://unlimited4-us.dps.live/biobiosantiago/aac/icecast.audio", "extension": "aac"}
+    ]
+}
