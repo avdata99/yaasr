@@ -40,4 +40,4 @@ class TestYStream:
         ys = YStream('good-stream', streams_folder=STREAMS_FOLDER)
         ys.load()
         assert ys.title == "Well defined stream"
-        assert ys.streams == ["https://wee.defined.org/stream"]
+        assert ys.streams[0]['url'] == "https://wee.defined.org/stream"
