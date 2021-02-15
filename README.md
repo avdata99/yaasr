@@ -38,56 +38,9 @@ ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
 
 You will see new audio files at `/yaasr/streams/radio-universidad-cordoba-argentina`
 
-#### Upload audio chunks using ssh
-
-Post process audio to MP3 16Khz and upload via ssh the result cleaning local files after the process
-
-```python
-import logging.config
-from yaasr.recorder.stream import YStream
-from yaasr.processors.audio.reduce import reformat
-from yaasr.processors.archive.ssh import upload_ssh
-
-
-logging.config.fileConfig('yaasr/log.conf')
-logging.info('Started')
-
-ys = YStream('radio-universidad-cordoba-argentina')
-ys.load()
-
-# post-processors (you can combine or create new processors)
-ys.post_process_functions = [
-    {
-        'fn': reformat,
-        'params': {
-            'audio_format': 'mp3',
-            'bitrate': '16k',
-            'delete_on_success': True
-        }
-    },
-    {
-        'fn': upload_ssh,
-        'params': {
-            'host': 'myhost.com',
-            'user': 'username',
-            'password': 'mypass',
-            'destination_folder': '/home/username/audios/',
-            'port': 901,
-            'delete_on_success': True
-        }
-    }
-]
-ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
-
-logging.info('Finished')
-
-```
-
-![ssh files](docs/img/sshed.png)
-
 #### Upload to Google Cloud Storage
 
-```
+```python
 from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
 from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
@@ -120,7 +73,47 @@ ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
 ![google-cloud-storage-list](docs/img/google-cloud-storage-list.png)
 ![google-cloud-storage-element](docs/img/google-cloud-storage-element.png)
 
-### From command line
+#### Upload audio chunks using ssh
+
+Post process audio to MP3 16Khz and upload via ssh the result cleaning local files after the process
+
+```python
+from yaasr.recorder.stream import YStream
+from yaasr.processors.audio.reduce import reformat
+from yaasr.processors.archive.ssh import upload_ssh
+
+
+ys = YStream('radio-universidad-cordoba-argentina')
+ys.load()
+
+# post-processors (you can combine or create new processors)
+ys.post_process_functions = [
+    {
+        'fn': reformat,
+        'params': {
+            'audio_format': 'mp3',
+            'bitrate': '16k',
+            'delete_on_success': True
+        }
+    },
+    {
+        'fn': upload_ssh,
+        'params': {
+            'host': 'myhost.com',
+            'user': 'username',
+            'password': 'mypass',
+            'destination_folder': '/home/username/audios/',
+            'port': 901,
+            'delete_on_success': True
+        }
+    }
+]
+ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
+```
+
+![ssh files](docs/img/sshed.png)
+
+### Usage from command line
 
 List all available streams
 
