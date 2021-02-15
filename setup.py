@@ -23,6 +23,11 @@ setuptools.setup(
         "Intended Audience :: Developers"
     ],
     packages=setuptools.find_packages(),
+    package_data={
+        "yaasr": [
+            "streams/*/data.json"
+            ]
+        },
     python_requires='>=3.6',
     install_requires=[
         'requests>=2.25.1',
