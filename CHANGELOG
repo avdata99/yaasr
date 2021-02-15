@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.4] 2021-02-15
+
+### Google Cloud storage
+ - Added Google Cloud Storage Archiving feature
+ - Allow reduce Audio as mono
+
 ## [0.3.3] 2021-02-14
 
 ### Command line tools added
