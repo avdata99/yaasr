@@ -45,6 +45,7 @@ from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
 from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
 
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google-cloud-storage-credential.json"
 ys = YStream('radio-universidad-cordoba-argentina')
 ys.load()
 

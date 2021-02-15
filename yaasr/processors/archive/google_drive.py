@@ -4,7 +4,8 @@ from google.cloud import storage
 
 
 logger = logging.getLogger(__name__)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "yaasr/settings/google-cloud-storage-credential.json"
+# Ensure load google credentials
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "yaasr/settings/google-cloud-storage-credential.json"
 
 
 def upload_to_google_cloud_storage(stream_path,
