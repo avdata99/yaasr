@@ -25,7 +25,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
     install_requires=[
-        'requests>=2.25.1'
+        'requests>=2.25.1',
+        'pydub>=0.24.1',   # Process audios
+        'paramiko>=2.7.2',  # Upload ssh
+        'google-cloud-storage>=1.36.0'  # Google cloud storage
     ],
     entry_points={
         'console_scripts': [
