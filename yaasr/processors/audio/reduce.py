@@ -23,9 +23,15 @@ def tryopen(stream_path):
     raise Exception(f'Pydub can\'t decode {stream_path} from {extensions}')
 
 
-def reformat(stream_path, audio_format='mp3', bitrate='16k', delete_on_success=False):
+def reformat(stream_path,
+             audio_format='mp3',
+             bitrate='12k',
+             mono=True,
+             delete_on_success=False):
     """ change the format and return new format with desired bitrate """
     audio = tryopen(stream_path)
+    if mono:
+        audio = audio.set_channels(1)
     filename = ''.join(stream_path.split('.')[:-1])
     new_file_name = f'{filename}-{bitrate}.{audio_format}'
     audio.export(new_file_name, format=audio_format, bitrate=bitrate)

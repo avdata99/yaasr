@@ -135,3 +135,5 @@ dmypy.json
 *.ogg
 *.wav
 run.py
+
+yaasr/settings/google-cloud-storage-credential.json
