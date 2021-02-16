@@ -1,0 +1,8 @@
+{
+    "title": "FM 102.3 Universidad Córdoba",
+    "short_name": "1023cba",
+    "web": "https://www.cba24n.com.ar/fm-102-3---cordoba",
+    "streams": [
+        {"url": "https://sp4.colombiatelecom.com.co/30306/stream", "extension": "aac"}
+    ]
+}
