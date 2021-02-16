@@ -5,7 +5,7 @@ from yaasr.recorder.stream import YStream
 def test_all_streams():
     streams = get_all_streams()
 
-    unique_names = []
+    unique_names = ['ALL', 'all']
     for stream in streams:
         ys = YStream(stream)
         ys.load()

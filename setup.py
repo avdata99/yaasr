@@ -33,7 +33,8 @@ setuptools.setup(
         'requests>=2.25.1',
         'pydub>=0.24.1',   # Process audios
         'paramiko>=2.7.2',  # Upload ssh
-        'google-cloud-storage>=1.36.0'  # Google cloud storage
+        'google-cloud-storage>=1.36.0',  # Google cloud storage
+        'jinja2>=2.11.3',  # Supervisor templates creation
     ],
     entry_points={
         'console_scripts': [

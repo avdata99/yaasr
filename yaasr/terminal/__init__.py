@@ -9,6 +9,7 @@ from yaasr import get_all_streams
 from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
 from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
+from yaasr.terminal.suprvisor import setup_supervisor
 
 
 def ls(test_streams=False):
@@ -77,14 +78,15 @@ def main():
     parser.add_argument('--log_level', nargs='?', default='INFO', type=str)
     parser.add_argument('--stream', nargs='?', default=None, type=str)
     # record parameters
-    parser.add_argument('--total_seconds', nargs='?', default=300, type=int)
+    parser.add_argument('--total_seconds', nargs='?', default=0, type=int)
     parser.add_argument('--chunk_bytes_size', nargs='?', default=256, type=int)
-    parser.add_argument('--chunk_time_size', nargs='?', default=60, type=int)
+    parser.add_argument('--chunk_time_size', nargs='?', default=1200, type=int)
     # compress parameters
-    parser.add_argument('--audio_format', nargs='?', default='ogg', choices=['mp3', 'ogg'], type=str)
+    parser.add_argument('--audio_format', nargs='?', default='mp3', choices=['mp3', 'ogg'], type=str)
 
     # credentials
     parser.add_argument('--google-credentials', nargs='?', default=None, type=str)
+    parser.add_argument('--system-user', nargs='?', default=None, type=str)
 
     args = parser.parse_args()
 
@@ -110,3 +112,8 @@ def main():
             chunk_bytes_size=args.chunk_bytes_size,
             chunk_time_size=args.chunk_time_size,
             audio_format=args.audio_format)
+    elif args.command == 'supervisor':
+        return setup_supervisor(
+            stream_name=args.stream,
+            system_user_name=args.system_user,
+            google_credentials_path=args.google_credentials)

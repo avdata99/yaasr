@@ -43,11 +43,11 @@ class YStream:
         self.streams = self.data['streams']
         self.short_name = self.data.get('short_name', self.name)
 
-    def record(self, total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60):
+    def record(self, total_seconds=0, chunk_bytes_size=1024, chunk_time_size=60):
         """ Record the online stream
 
         Params:
-            total_seconds: total time to save from the stream
+            total_seconds: total time to save from the stream. 0 is for ever
             chunk_bytes_size: chunk size to iterate over stream downloaded data
             chunk_time_size: split the audio files is chunk with this time
         """
@@ -78,7 +78,7 @@ class YStream:
 
                 now = datetime.now()
                 elapsed = now - start
-                if elapsed >= timedelta(seconds=total_seconds):
+                if total_seconds > 0 and elapsed >= timedelta(seconds=total_seconds):
                     logger.info(f'Finish recording {now}')
                     break
                 elif now - last_start >= timedelta(seconds=chunk_time_size):
