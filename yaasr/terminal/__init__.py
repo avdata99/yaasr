@@ -70,6 +70,7 @@ def compress_and_google_store(stream,
 
 
 def main():
+    # TODO fix path or replace to local settings
     logging.config.fileConfig('yaasr/log.conf')
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Command to run')

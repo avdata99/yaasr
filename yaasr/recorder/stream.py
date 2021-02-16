@@ -16,9 +16,10 @@ class YStream:
     def __init__(self, stream_name, streams_folder=STREAMS_FOLDER):
         self.name = stream_name
         self.streams_folder = streams_folder
-        self.str_chunk_time_format = '%Y%m%d%H%M%S'
+        self.str_chunk_time_format = '%Y-%m-%d--%H-%M-%S'
         # after save each audio chunk we can post-process the file, upload or anything
         self.post_process_functions = []
+        self.short_name = self.name
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -40,6 +41,7 @@ class YStream:
         self.title = self.data['title']
         self.web_site = self.data.get('web', None)
         self.streams = self.data['streams']
+        self.short_name = self.data.get('short_name', self.name)
 
     def record(self, total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60):
         """ Record the online stream
@@ -64,7 +66,7 @@ class YStream:
             start = datetime.now()
             extension = stream.get('extension', 'mp3')
             stime = start.strftime(self.str_chunk_time_format)
-            stream_path = os.path.join(self.stream_folder, f'stream-{self.name}-{stime}.{extension}')
+            stream_path = os.path.join(self.stream_folder, f'{self.short_name}-{stime}.{extension}')
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
             last_start = start
@@ -84,7 +86,7 @@ class YStream:
                     self.chunk_finished(stream_path)
                     last_start = datetime.now()
                     stime = last_start.strftime(self.str_chunk_time_format)
-                    stream_path = os.path.join(self.stream_folder, f'stream-{self.name}-{stime}.{extension}')
+                    stream_path = os.path.join(self.stream_folder, f'{self.short_name}-{stime}.{extension}')
                     f.close()
                     f = open(stream_path, 'wb')
 
