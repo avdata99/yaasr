@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.8] 2021-02-16
+
+### Google Cloud storage
+ - Allow to run it from command line
+
 ## [0.3.4] 2021-02-15
 
 ### Google Cloud storage
