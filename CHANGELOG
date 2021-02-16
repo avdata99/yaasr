@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.9] 2021-02-16
+
+### File names
+ - Allow to use a short name to improve chunk names
+
 ## [0.3.8] 2021-02-16
 
 ### Google Cloud storage
