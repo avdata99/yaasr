@@ -25,16 +25,30 @@ def tryopen(stream_path):
 
 def reformat(stream_path,
              audio_format='mp3',
-             bitrate='12k',
              mono=True,
              delete_on_success=False):
     """ change the format and return new format with desired bitrate """
     audio = tryopen(stream_path)
+    # if mono:
+    #     audio = audio.set_channels(1)
+    filename = '.'.join(stream_path.split('.')[:-1])
+    new_file_name = f'{filename}.{audio_format}'
+
+    if audio_format == 'mp3':
+        parameters = [
+            "-ab", "16k",
+            "-ar", "8000"
+        ]
+    elif audio_format == 'ogg':
+        parameters = [
+            "-ab", "16k",
+            "-ar", "8000"
+        ]
+
     if mono:
-        audio = audio.set_channels(1)
-    filename = ''.join(stream_path.split('.')[:-1])
-    new_file_name = f'{filename}-{bitrate}.{audio_format}'
-    audio.export(new_file_name, format=audio_format, bitrate=bitrate)
+        parameters += ['-ac', '1']
+
+    audio.export(new_file_name, format=audio_format, parameters=parameters)
 
     if delete_on_success:
         os.remove(stream_path)

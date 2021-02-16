@@ -88,6 +88,7 @@ class YStream:
                     f.close()
                     f = open(stream_path, 'wb')
 
+            f.close()
             # last chunk
             self.chunk_finished(stream_path)
             return stream_path

@@ -4,8 +4,11 @@ Iterate over priority domains and send data to server
 import argparse
 import json
 import logging.config
+import os
 from yaasr import get_all_streams
 from yaasr.recorder.stream import YStream
+from yaasr.processors.audio.reduce import reformat
+from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
 
 
 def ls(test_streams=False):
@@ -37,17 +40,55 @@ def record(stream, total_seconds=300, chunk_bytes_size=256, chunk_time_size=60):
     ys.record(total_seconds=total_seconds, chunk_bytes_size=chunk_bytes_size, chunk_time_size=chunk_time_size)
 
 
+def compress_and_google_store(stream,
+                              total_seconds=300,
+                              chunk_bytes_size=256,
+                              chunk_time_size=60,
+                              audio_format='ogg'):
+    """ Shows stream info """
+
+    ys = YStream(stream)
+    ys.load()
+    ys.post_process_functions = [
+        {
+            'fn': reformat,
+            'params': {
+                'audio_format': audio_format,
+                'mono': True,
+                'delete_on_success': True
+            }
+        },
+        {
+            'fn': upload_to_google_cloud_storage,
+            'params': {
+                'bucket_name': 'parlarispa-radio',
+                'delete_on_success': True
+            }
+        }
+    ]
+    ys.record(total_seconds=total_seconds, chunk_bytes_size=chunk_bytes_size, chunk_time_size=chunk_time_size)
+
+
 def main():
     logging.config.fileConfig('yaasr/log.conf')
     parser = argparse.ArgumentParser()
     parser.add_argument('command', help='Command to run')
     parser.add_argument('--log_level', nargs='?', default='INFO', type=str)
     parser.add_argument('--stream', nargs='?', default=None, type=str)
+    # record parameters
     parser.add_argument('--total_seconds', nargs='?', default=300, type=int)
     parser.add_argument('--chunk_bytes_size', nargs='?', default=256, type=int)
     parser.add_argument('--chunk_time_size', nargs='?', default=60, type=int)
+    # compress parameters
+    parser.add_argument('--audio_format', nargs='?', default='ogg', choices=['mp3', 'ogg'], type=str)
+    
+    # credentials
+    parser.add_argument('--google-credentials', nargs='?', default=None, type=str)
 
     args = parser.parse_args()
+
+    if args.google_credentials is not None:
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = args.google_credentials
 
     if args.command == 'ls':
         return ls()
@@ -61,3 +102,10 @@ def main():
             total_seconds=args.total_seconds,
             chunk_bytes_size=args.chunk_bytes_size,
             chunk_time_size=args.chunk_time_size)
+    elif args.command == 'compress-and-google-store':
+        return compress_and_google_store(
+            stream=args.stream,
+            total_seconds=args.total_seconds,
+            chunk_bytes_size=args.chunk_bytes_size,
+            chunk_time_size=args.chunk_time_size,
+            audio_format=args.audio_format)
