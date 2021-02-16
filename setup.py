@@ -25,7 +25,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         "yaasr": [
-            "streams/*/data.json"
+            "streams/*/data.json",
+            "terminal/tpl/supervisor.ini"
             ]
         },
     python_requires='>=3.6',
