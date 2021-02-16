@@ -81,7 +81,7 @@ def main():
     parser.add_argument('--chunk_time_size', nargs='?', default=60, type=int)
     # compress parameters
     parser.add_argument('--audio_format', nargs='?', default='ogg', choices=['mp3', 'ogg'], type=str)
-    
+
     # credentials
     parser.add_argument('--google-credentials', nargs='?', default=None, type=str)
 
