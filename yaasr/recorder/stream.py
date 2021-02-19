@@ -107,3 +107,4 @@ class YStream:
             logger.info(f'Running {fn}')
             params = ppf.get('params', {})
             stream_path = fn(stream_path, **params)
+            logger.info(f'{fn} finished')

@@ -16,7 +16,7 @@ def tryopen(stream_path):
             audio = AudioSegment.from_file(stream_path, ext)
         except CouldntDecodeError:
             # maybe the codec is not the format
-            logger.error
+            logger.error('Format {} failed')
         else:
             logging.info(f'{ext} worked')
             return audio
