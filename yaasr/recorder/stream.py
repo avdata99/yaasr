@@ -72,7 +72,7 @@ class YStream:
 
             extension = stream.get('extension', 'mp3')
             start, stream_path = self.generate_stream_path(extension=extension)
-            
+
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
             last_start = start
