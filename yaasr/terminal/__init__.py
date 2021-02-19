@@ -8,8 +8,8 @@ import os
 from yaasr import get_all_streams
 from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
-from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
-from yaasr.terminal.suprvisor import setup_supervisor
+from yaasr.processors.archive.google_cloud import upload_to_google_cloud_storage
+from yaasr.terminal.supervisor import setup_supervisor
 
 
 def ls(test_streams=False):
@@ -104,16 +104,22 @@ def main():
             stream=args.stream,
             total_seconds=args.total_seconds,
             chunk_bytes_size=args.chunk_bytes_size,
-            chunk_time_size=args.chunk_time_size)
+            chunk_time_size=args.chunk_time_size
+        )
     elif args.command == 'compress-and-google-store':
         return compress_and_google_store(
             stream=args.stream,
             total_seconds=args.total_seconds,
             chunk_bytes_size=args.chunk_bytes_size,
             chunk_time_size=args.chunk_time_size,
-            audio_format=args.audio_format)
+            audio_format=args.audio_format
+        )
     elif args.command == 'supervisor':
         return setup_supervisor(
             stream_name=args.stream,
             system_user_name=args.system_user,
-            google_credentials_path=args.google_credentials)
+            google_credentials_path=args.google_credentials,
+            total_seconds=args.total_seconds,
+            chunk_bytes_size=args.chunk_bytes_size,
+            chunk_time_size=args.chunk_time_size
+        )

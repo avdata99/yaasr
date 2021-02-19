@@ -43,7 +43,7 @@ You will see new audio files at `/yaasr/streams/radio-universidad-cordoba-argent
 ```python
 from yaasr.recorder.stream import YStream
 from yaasr.processors.audio.reduce import reformat
-from yaasr.processors.archive.google_drive import upload_to_google_cloud_storage
+from yaasr.processors.archive.google_cloud import upload_to_google_cloud_storage
 
 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google-cloud-storage-credential.json"
 ys = YStream('radio-universidad-cordoba-argentina')
@@ -158,3 +158,7 @@ $ yaasr record \
 2021-02-14 18:28:51,294 - yaasr.recorder.stream - INFO - Finish recording 2021-02-14 18:28:51.294881
 2021-02-14 18:28:51,295 - yaasr.recorder.stream - INFO - Chunk finished
 ```
+
+### More docs
+
+ - Add recording task to [supervidor](docs/run-with-supervisor.md)

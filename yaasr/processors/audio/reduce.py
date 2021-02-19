@@ -28,6 +28,7 @@ def reformat(stream_path,
              mono=True,
              delete_on_success=False):
     """ change the format and return new format with desired bitrate """
+    logging.info(f'reformat {stream_path} to {audio_format}')
     audio = tryopen(stream_path)
     # if mono:
     #     audio = audio.set_channels(1)
@@ -48,8 +49,10 @@ def reformat(stream_path,
     if mono:
         parameters += ['-ac', '1']
 
-    audio.export(new_file_name, format=audio_format, parameters=parameters)
+    ret = audio.export(new_file_name, format=audio_format, parameters=parameters)
+    logging.info(f'Export finished {ret}')
 
     if delete_on_success:
+        logging.info(f'Deleting {stream_path}')
         os.remove(stream_path)
     return new_file_name

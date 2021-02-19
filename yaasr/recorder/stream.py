@@ -13,13 +13,14 @@ logger = logging.getLogger(__name__)
 class YStream:
     """ YAASR stream """
 
-    def __init__(self, stream_name, streams_folder=STREAMS_FOLDER):
+    def __init__(self, stream_name, streams_folder=STREAMS_FOLDER, destination_folder=''):
         self.name = stream_name
         self.streams_folder = streams_folder
         self.str_chunk_time_format = '%Y-%m-%d--%H-%M-%S'
         # after save each audio chunk we can post-process the file, upload or anything
         self.post_process_functions = []
         self.short_name = self.name
+        self.destination_folder = destination_folder
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -43,6 +44,12 @@ class YStream:
         self.streams = self.data['streams']
         self.short_name = self.data.get('short_name', self.name)
 
+    def generate_stream_path(self, extension):
+        now = datetime.now()
+        stime = now.strftime(self.str_chunk_time_format)
+        stream_path = os.path.join(self.destination_folder, f'{self.short_name}-{stime}.{extension}')
+        return now, stream_path
+
     def record(self, total_seconds=0, chunk_bytes_size=1024, chunk_time_size=60):
         """ Record the online stream
 
@@ -63,10 +70,9 @@ class YStream:
                 logger.error(f'Error connecting to stream {c} {url}: {e}')
                 continue
 
-            start = datetime.now()
             extension = stream.get('extension', 'mp3')
-            stime = start.strftime(self.str_chunk_time_format)
-            stream_path = os.path.join(self.stream_folder, f'{self.short_name}-{stime}.{extension}')
+            start, stream_path = self.generate_stream_path(extension=extension)
+            
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
             last_start = start
@@ -84,9 +90,7 @@ class YStream:
                 elif now - last_start >= timedelta(seconds=chunk_time_size):
                     logger.info(f'{now} Elapsed {elapsed} Finish chunk {c}')
                     self.chunk_finished(stream_path)
-                    last_start = datetime.now()
-                    stime = last_start.strftime(self.str_chunk_time_format)
-                    stream_path = os.path.join(self.stream_folder, f'{self.short_name}-{stime}.{extension}')
+                    last_start, stream_path = self.generate_stream_path(extension=extension)
                     f.close()
                     f = open(stream_path, 'wb')
 
