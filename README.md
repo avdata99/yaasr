@@ -9,6 +9,7 @@
 # Yet Another Audio Stream Recorder
 
 Audio stream recorded and static DB for radio stations
+**Why?** Because other tools are (probably, [is not clear](https://github.com/mgaitan/radiocut_downloader/pull/18#issuecomment-526191324)) not availabe to use.
 
 ## Install
 
@@ -36,7 +37,7 @@ ys.load()
 ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
 ```
 
-You will see new audio files at `/yaasr/streams/radio-universidad-cordoba-argentina`
+You will see new audio files at your local folder
 
 #### Upload to Google Cloud Storage
 
@@ -161,4 +162,4 @@ $ yaasr record \
 
 ### More docs
 
- - Add recording task to [supervidor](docs/run-with-supervisor.md)
+ - Add recording task to [supervisor](docs/run-with-supervisor.md)

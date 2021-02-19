@@ -49,7 +49,10 @@ def reformat(stream_path,
     if mono:
         parameters += ['-ac', '1']
 
+    # #####################
+    # This process consume a lot of resources and OOM killer could stop it
     ret = audio.export(new_file_name, format=audio_format, parameters=parameters)
+    # #####################
     logging.info(f'Export finished {ret}')
 
     if delete_on_success:
