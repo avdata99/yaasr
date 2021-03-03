@@ -1,0 +1,8 @@
+{
+    "title": "Radio Congo",
+    "short_name": "congo",
+    "web": "https://radio.congo.fm/",
+    "streams": [
+        {"url": "https://cdn2.instream.audio/:9243/stream", "extension": "aac"}
+    ]
+}
