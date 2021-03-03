@@ -8,7 +8,7 @@
 
 # Yet Another Audio Stream Recorder
 
-Audio stream recorded and static DB for radio stations
+Audio stream recorded and static DB for radio stations.  
 **Why?** Because other tools are (probably, [is not clear](https://github.com/mgaitan/radiocut_downloader/pull/18#issuecomment-526191324)) not availabe to use.
 
 ## Install
@@ -29,8 +29,6 @@ Load a pre-defined stream and save 5 audio chunks of 60 seconds
 
 ```python
 from yaasr.recorder.stream import YStream
-from yaasr.processors.audio.reduce import reformat
-from yaasr.processors.archive.ssh import upload_ssh
 
 ys = YStream('radio-universidad-cordoba-argentina')
 ys.load()
