@@ -54,7 +54,6 @@ ys.post_process_functions = [
         'fn': reformat,
         'params': {
             'audio_format': 'mp3',
-            'bitrate': '8k',
             'mono': True,
             'delete_on_success': True
         }
@@ -92,7 +91,6 @@ ys.post_process_functions = [
         'fn': reformat,
         'params': {
             'audio_format': 'mp3',
-            'bitrate': '16k',
             'delete_on_success': True
         }
     },

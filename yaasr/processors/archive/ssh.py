@@ -13,6 +13,7 @@ def upload_ssh(stream_path,
                host,
                user,
                password,
+               metadata,
                destination_folder,
                port=22,
                delete_on_success=False):
@@ -38,5 +39,5 @@ def upload_ssh(stream_path,
     if delete_on_success:
         logging.info(f'Deleting {stream_path}')
         os.remove(stream_path)
-    else:
-        return stream_path
+
+    return stream_path, metadata

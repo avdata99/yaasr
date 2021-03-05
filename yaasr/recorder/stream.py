@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import pytz
 import requests
 from datetime import datetime, timedelta
 from yaasr import STREAMS_FOLDER
@@ -21,6 +22,7 @@ class YStream:
         self.post_process_functions = []
         self.short_name = self.name
         self.destination_folder = destination_folder
+        self.timezone = pytz.timezone('UTC')
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -43,9 +45,10 @@ class YStream:
         self.web_site = self.data.get('web', None)
         self.streams = self.data['streams']
         self.short_name = self.data.get('short_name', self.name)
+        self.timezone = pytz.timezone(self.data.get('timezone', 'UTC'))
 
     def generate_stream_path(self, extension):
-        now = datetime.now()
+        now = datetime.now(self.timezone)
         stime = now.strftime(self.str_chunk_time_format)
         stream_path = os.path.join(self.destination_folder, f'{self.short_name}-{stime}.{extension}')
         return now, stream_path
@@ -72,7 +75,7 @@ class YStream:
 
             extension = stream.get('extension', 'mp3')
             start, stream_path = self.generate_stream_path(extension=extension)
-
+            self.last_start = start
             f = open(stream_path, 'wb')
             logger.info(f'Recording from {url}')
             last_start = start
@@ -82,7 +85,7 @@ class YStream:
                 f.write(block)
                 logger.debug('  ... chunk saved')
 
-                now = datetime.now()
+                now = datetime.now(self.timezone)
                 elapsed = now - start
                 if total_seconds > 0 and elapsed >= timedelta(seconds=total_seconds):
                     logger.info(f'Finish recording {now}')
@@ -102,9 +105,15 @@ class YStream:
     def chunk_finished(self, stream_path):
         """ An audio chunk finished. We can post-process and/or upload """
         logger.info('Chunk finished')
+        metadata = {
+            'stream_name': self.name,
+            'short_name': self.short_name,
+            'started': self.last_start,
+            'finished': datetime.now(self.timezone)
+        }
         for ppf in self.post_process_functions:
             fn = ppf['fn']
             logger.info(f'Running {fn}')
             params = ppf.get('params', {})
-            stream_path = fn(stream_path, **params)
+            stream_path, metadata = fn(stream_path, metadata=metadata, **params)
             logger.info(f'{fn} finished')

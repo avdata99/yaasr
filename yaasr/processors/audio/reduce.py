@@ -24,6 +24,7 @@ def tryopen(stream_path):
 
 
 def reformat(stream_path,
+             metadata,
              audio_format='mp3',
              mono=True,
              delete_on_success=False):
@@ -35,6 +36,7 @@ def reformat(stream_path,
     filename = '.'.join(stream_path.split('.')[:-1])
     new_file_name = f'{filename}.{audio_format}'
 
+    metadata['audio_format'] = audio_format
     if audio_format == 'mp3':
         parameters = [
             "-ab", "16k",
@@ -49,6 +51,7 @@ def reformat(stream_path,
     if mono:
         parameters += ['-ac', '1']
 
+    metadata['mono'] = mono
     # #####################
     # This process consume a lot of resources and OOM killer could stop it
     ret = audio.export(new_file_name, format=audio_format, parameters=parameters)
@@ -58,4 +61,4 @@ def reformat(stream_path,
     if delete_on_success:
         logging.info(f'Deleting {stream_path}')
         os.remove(stream_path)
-    return new_file_name
+    return new_file_name, metadata

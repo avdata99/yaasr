@@ -1,6 +1,7 @@
 {
     "title": "Radio Dos Rosario",
     "short_name": "radio2rosario",
+    "timezone": "America/Argentina/Cordoba",
     "web": "https://www.rosario3.com/radios/radio2.html",
     "streams": [
         {"url": "https://streaming320tb.locucionar.com/proxy/radio2?mp=/stream", "extension": "aac"}

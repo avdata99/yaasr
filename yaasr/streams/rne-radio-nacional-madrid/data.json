@@ -2,6 +2,7 @@
     "title": "Radio Nacional España en Madrid",
     "short_name": "rne-madrid",
     "web": "https://www.rtve.es/radio/radio-nacional/directo/",
+    "timezone": "America/Argentina/Cordoba",
     "streams": [
         {"url": "http://rne.rtveradio.cires21.com/rnemad.mp3", "extension": "mp3"}
     ]

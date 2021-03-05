@@ -2,6 +2,7 @@
     "title": "Radio Universidad de Córdoba",
     "short_name": "unicba",
     "web": "https://www.cba24n.com.ar/radio-universidad-am-580---cordoba",
+    "timezone": "America/Argentina/Cordoba",
     "streams": [
         {"url": "https://sp4.colombiatelecom.com.co:10995/stream", "extension": "aac"}
     ]
