@@ -42,6 +42,7 @@ def record(stream, total_seconds=300, chunk_bytes_size=256, chunk_time_size=60):
 
 
 def compress_and_google_store(stream,
+                              bucket_name,
                               total_seconds=300,
                               chunk_bytes_size=256,
                               chunk_time_size=60,
@@ -62,7 +63,7 @@ def compress_and_google_store(stream,
         {
             'fn': upload_to_google_cloud_storage,
             'params': {
-                'bucket_name': 'parlarispa-radio',
+                'bucket_name': bucket_name,
                 'delete_on_success': True
             }
         }
@@ -83,6 +84,7 @@ def main():
     parser.add_argument('--chunk_time_size', nargs='?', default=1200, type=int)
     # compress parameters
     parser.add_argument('--audio_format', nargs='?', default='mp3', choices=['mp3', 'ogg'], type=str)
+    parser.add_argument('--bucket_name', nargs='?', default=None, type=str)
 
     # credentials
     parser.add_argument('--google-credentials', nargs='?', default=None, type=str)
@@ -109,6 +111,7 @@ def main():
     elif args.command == 'compress-and-google-store':
         return compress_and_google_store(
             stream=args.stream,
+            bucket_name=args.bucket_name,
             total_seconds=args.total_seconds,
             chunk_bytes_size=args.chunk_bytes_size,
             chunk_time_size=args.chunk_time_size,
@@ -117,6 +120,7 @@ def main():
     elif args.command == 'supervisor':
         return setup_supervisor(
             stream_name=args.stream,
+            bucket_name=args.bucket_name,
             system_user_name=args.system_user,
             google_credentials_path=args.google_credentials,
             total_seconds=args.total_seconds,

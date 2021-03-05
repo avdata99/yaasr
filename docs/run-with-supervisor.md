@@ -8,7 +8,7 @@ We assume you have the `google-cloud-storage-credential.json` file at `/home/USE
 
 ```ini
 [program:yaasr-RADIONAME]
-command=yaasr compress-and-google-store --stream RADIONAME --google-credentials /home/USER/yaasr/google-cloud-storage-credential.json \ 
+command=yaasr compress-and-google-store --stream RADIONAME --bucket_name BUCKET_NAME --google-credentials /home/USER/yaasr/google-cloud-storage-credential.json
 directory=/home/USER/yaasr
 user=USER
 autostart=true

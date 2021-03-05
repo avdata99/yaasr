@@ -4,6 +4,7 @@ from yaasr import get_all_streams
 
 
 def setup_supervisor(stream_name,
+                     bucket_name,
                      system_user_name,
                      google_credentials_path,
                      total_seconds=0,
@@ -14,6 +15,7 @@ def setup_supervisor(stream_name,
     streams = get_all_streams() if stream_name.lower() == 'all' else [stream_name]
     template_file = os.path.join(os.path.dirname(__file__), 'tpl', 'supervisor.ini')
     context = {
+        'bucket_name': bucket_name,
         'user_name': system_user_name,
         'google_credentials_path': google_credentials_path,
         'total_seconds': total_seconds,
