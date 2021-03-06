@@ -94,6 +94,7 @@ class YStream:
                     logger.info(f'{now} Elapsed {elapsed} Finish chunk {c}')
                     self.chunk_finished(stream_path)
                     last_start, stream_path = self.generate_stream_path(extension=extension)
+                    self.last_start = last_start
                     f.close()
                     f = open(stream_path, 'wb')
 
