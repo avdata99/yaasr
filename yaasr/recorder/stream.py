@@ -3,6 +3,7 @@ import logging
 import os
 import pytz
 import requests
+from time import sleep
 from datetime import datetime, timedelta
 from yaasr import STREAMS_FOLDER
 from yaasr.exceptions import StreamFolderNotFoud, StreamDataFileNotFoud
@@ -23,6 +24,14 @@ class YStream:
         self.short_name = self.name
         self.destination_folder = destination_folder
         self.timezone = pytz.timezone('UTC')
+
+        # ranges to record (to avoid record 24h)
+        self.record_from_time = None
+        self.record_to_time = None
+
+    def set_record_times(self, from_time=None, to_time=None):
+        self.record_from_time = from_time
+        self.record_to_time = to_time
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -61,6 +70,20 @@ class YStream:
             chunk_bytes_size: chunk size to iterate over stream downloaded data
             chunk_time_size: split the audio files is chunk with this time
         """
+        if self.record_to_time is not None:
+            time_now = datetime.now(self.timezone).time()
+            while time_now >= self.record_to_time:
+                logger.info(f'Now {time_now} is late to save')
+                sleep(90)
+                time_now = datetime.now(self.timezone).time()
+
+        if self.record_from_time is not None:
+            time_now = datetime.now(self.timezone).time()
+            while time_now < self.record_from_time:
+                logger.info(f'Now {time_now} is early to save')
+                sleep(90)
+                time_now = datetime.now(self.timezone).time()
+
         c = 0
         for stream in self.streams:
 
@@ -88,7 +111,7 @@ class YStream:
                 now = datetime.now(self.timezone)
                 elapsed = now - start
                 if total_seconds > 0 and elapsed >= timedelta(seconds=total_seconds):
-                    logger.info(f'Finish recording {now}')
+                    logger.info(f'Finish total_seconds recording {now}')
                     break
                 elif now - last_start >= timedelta(seconds=chunk_time_size):
                     logger.info(f'{now} Elapsed {elapsed} Finish chunk {c}')
@@ -97,6 +120,11 @@ class YStream:
                     self.last_start = last_start
                     f.close()
                     f = open(stream_path, 'wb')
+                elif self.record_to_time is not None:
+                    time_now = datetime.now(self.timezone).time()
+                    if time_now >= self.record_to_time:
+                        logger.info(f'Finished day time {self.record_to_time} at {time_now}')
+                        break
 
             f.close()
             # last chunk
