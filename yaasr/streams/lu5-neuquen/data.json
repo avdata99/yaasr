@@ -1,0 +1,9 @@
+{
+    "title": "LU5 Neuquen",
+    "short_name": "lu5neuquen",
+    "web": "https://www.lu5am.com/en-vivo/",
+    "timezone": "America/Argentina/Cordoba",
+    "streams": [
+        {"url": "https://live.lu5am.com:8443/LU5", "extension": "aac"}
+    ]
+}

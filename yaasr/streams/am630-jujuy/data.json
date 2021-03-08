@@ -1,0 +1,9 @@
+{
+    "title": "AM 630 Jujuy",
+    "short_name": "jujuy630",
+    "web": "https://www.somosjujuy.com.ar/am630vivo",
+    "timezone": "America/Argentina/Cordoba",
+    "streams": [
+        {"url": "https://sp4.colombiatelecom.com.co:10995/stream", "extension": "aac"}
+    ]
+}

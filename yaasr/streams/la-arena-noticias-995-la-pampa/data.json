@@ -1,0 +1,9 @@
+{
+    "title": "La Arena Radio Noticias 99.5 La Pampa",
+    "short_name": "arenapampa",
+    "web": "http://www.laarena.com.ar/",
+    "timezone": "America/Argentina/Cordoba",
+    "streams": [
+        {"url": "http://stream01.insidetec.com:9014/radionoticias", "extension": "aac"}
+    ]
+}
