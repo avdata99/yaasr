@@ -138,3 +138,4 @@ run.py
 
 yaasr/settings/google-cloud-storage-credential.json
 tests/test_upload.py
+yaasr/tests/chunks/

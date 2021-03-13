@@ -23,7 +23,7 @@ pip install yaasr
 
 ### From Python
 
-#### Save audio locally
+#### Save predefined audio locally
 
 Load a pre-defined stream and save 5 audio chunks of 60 seconds
 
@@ -36,6 +36,29 @@ ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=60)
 ```
 
 You will see new audio files at your local folder
+
+#### Save custom audio locally
+
+Load a custom stream and save 5 audio chunks of 60 seconds
+
+```python
+from yaasr.recorder.stream import YStream
+
+""" test custom stream """
+ys = YStream(stream_name='my-custom-stream')
+ys.destination_folder = 'some-path/my-chunks-folder'
+ys.title = 'My radio title'
+ys.short_name = 'my-radio'
+
+# list of stream (if first fails the second should be used)
+ys.streams = [
+    {'url': 'https://my-radio.org/stream'}
+]
+
+ys.record(total_seconds=300, chunk_bytes_size=1024, chunk_time_size=5)
+```
+
+You will see new audio files at `some-path/my-chunks-folder` folder
 
 #### Upload to Google Cloud Storage
 

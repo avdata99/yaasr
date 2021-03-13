@@ -29,6 +29,9 @@ class YStream:
         self.record_from_time = None
         self.record_to_time = None
 
+        # chunks saved
+        self.saved_chunks = []
+
     def set_record_times(self, from_time=None, to_time=None):
         self.record_from_time = from_time
         self.record_to_time = to_time
@@ -140,6 +143,8 @@ class YStream:
             'started': self.last_start,
             'finished': datetime.now(self.timezone)
         }
+        self.saved_chunks.append(metadata)
+
         for ppf in self.post_process_functions:
             fn = ppf['fn']
             logger.info(f'Running {fn}')
