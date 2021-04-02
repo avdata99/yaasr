@@ -5,7 +5,7 @@ import pytz
 import requests
 from time import sleep
 from datetime import datetime, timedelta
-from yaasr import STREAMS_FOLDER
+from yaasr import STREAMS_FOLDER, __VERSION__
 from yaasr.exceptions import StreamFolderNotFoud, StreamDataFileNotFoud
 
 
@@ -181,18 +181,22 @@ class YStream:
         data.update({'post_process_functions': ppfs})
         self.notify('CHUNK_FINISHED', data)
 
-    def notify(self, event_name, data):
+    def notify(self, event_name, data={}):
         """ notify status to an external URL """
         if self.notify_url is None:
             return
         url = self.notify_url
-        data.update(self.notify_extra_params)
+        data['extras'] = self.notify_extra_params
 
         # default params
         data['event'] = event_name
         data['stream_name'] = self.name
+        data['yaasr_version'] = __VERSION__
 
+        headers = {'User-Agent': f'YAASR v{__VERSION__}'}
+        # Use secure tokens from your server to avoid assholes.
+        headers.update(self.notify_headers)
         try:
-            requests.post(url=url, headers=self.notify_headers, params=data)
+            requests.post(url=url, headers=headers, params=data)
         except Exception as e:
             logger.error(f'Error notifying: {e}')

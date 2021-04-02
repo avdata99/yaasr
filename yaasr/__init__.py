@@ -1,7 +1,7 @@
 import os
 
 
-__VERSION__ = '0.4.9'
+__VERSION__ = '0.4.10'
 BASE_FOLDER = os.path.dirname(__file__)
 STREAMS_FOLDER = os.path.join(BASE_FOLDER, "streams")
 
