@@ -106,7 +106,9 @@ class YStream:
             try:
                 r = requests.get(url, stream=True)
             except Exception as e:
-                logger.error(f'Error connecting to stream {c} {url}: {e}')
+                error = f'Error connecting to stream {c} {url}: {e}'
+                logger.error(error)
+                self.notify('START_RECORDING', data={'url': url}, error=error)
                 continue
 
             self.notify('START_RECORDING', {'url': url})
@@ -165,7 +167,12 @@ class YStream:
             fn = ppf['fn']
             logger.info(f'Running {fn}')
             params = ppf.get('params', {})
-            stream_path, metadata = fn(stream_path, metadata=metadata, **params)
+            try:
+                stream_path, metadata = fn(stream_path, metadata=metadata, **params)
+            except Exception as e:
+                error = f'Error at postprocess function {e}'
+                self.notify('CHUNK_FINISHED', error=error)
+                raise
             logger.info(f'{fn} finished')
             elapsed = datetime.now(self.timezone) - start_time
             ppfs.append({
@@ -181,7 +188,7 @@ class YStream:
         data.update({'post_process_functions': ppfs})
         self.notify('CHUNK_FINISHED', data)
 
-    def notify(self, event_name, data={}):
+    def notify(self, event_name, data={}, error=None):
         """ notify status to an external URL """
         if self.notify_url is None:
             return
@@ -192,6 +199,7 @@ class YStream:
         data['event'] = event_name
         data['stream_name'] = self.name
         data['yaasr_version'] = __VERSION__
+        data['error'] = error
 
         headers = {'User-Agent': f'YAASR v{__VERSION__}'}
         # Use secure tokens from your server to avoid assholes.
