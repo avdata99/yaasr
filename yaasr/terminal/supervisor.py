@@ -9,7 +9,8 @@ def setup_supervisor(stream_name,
                      google_credentials_path,
                      total_seconds=0,
                      chunk_bytes_size=256,
-                     chunk_time_size=30 * 60):
+                     chunk_time_size=30 * 60,
+                     base_path='/etc/supervisor/conf.d/'):
 
     """ setup supervisor to save a radio station. """
     streams = get_all_streams() if stream_name.lower() == 'all' else [stream_name]
@@ -26,7 +27,7 @@ def setup_supervisor(stream_name,
     for stream in streams:
         context['stream_name'] = stream
         result = template.render(**context)
-        path = f'/etc/supervisor/conf.d/{stream}.conf'
+        path = os.path.join(base_path, f'{stream}.conf')
         f = open(path, 'w')
         f.write(result)
         f.close()

@@ -32,6 +32,14 @@ class YStream:
         # chunks saved
         self.saved_chunks = []
 
+        # Notify events to an external URL
+        self.notify_url = None
+
+    def set_notifications(self, url, headers={}, params={}):
+        self.notify_url = url
+        self.notify_extra_params = params
+        self.notify_headers = headers
+
     def set_record_times(self, from_time=None, to_time=None):
         self.record_from_time = from_time
         self.record_to_time = to_time
@@ -79,6 +87,7 @@ class YStream:
                 logger.info(f'Now {time_now} is late to save')
                 sleep(90)
                 time_now = datetime.now(self.timezone).time()
+                self.notify('LATE_TO_SAVE')
 
         if self.record_from_time is not None:
             time_now = datetime.now(self.timezone).time()
@@ -86,6 +95,7 @@ class YStream:
                 logger.info(f'Now {time_now} is early to save')
                 sleep(90)
                 time_now = datetime.now(self.timezone).time()
+                self.notify('EARLY_TO_SAVE')
 
         c = 0
         for stream in self.streams:
@@ -99,6 +109,7 @@ class YStream:
                 logger.error(f'Error connecting to stream {c} {url}: {e}')
                 continue
 
+            self.notify('START_RECORDING', {'url': url})
             extension = stream.get('extension', 'mp3')
             start, stream_path = self.generate_stream_path(extension=extension)
             self.last_start = start
@@ -132,6 +143,7 @@ class YStream:
             f.close()
             # last chunk
             self.chunk_finished(stream_path)
+            self.notify('FINISH_RECORDING', {'url': url})
             return stream_path
 
     def chunk_finished(self, stream_path):
@@ -145,9 +157,42 @@ class YStream:
         }
         self.saved_chunks.append(metadata)
 
+        ppfs = []
+        order = 0
         for ppf in self.post_process_functions:
+            order += 1
+            start_time = datetime.now(self.timezone)
             fn = ppf['fn']
             logger.info(f'Running {fn}')
             params = ppf.get('params', {})
             stream_path, metadata = fn(stream_path, metadata=metadata, **params)
             logger.info(f'{fn} finished')
+            elapsed = datetime.now(self.timezone) - start_time
+            ppfs.append({
+                'order': order,
+                'function': fn.__name__,
+                'elapsed': str(elapsed),
+                # TODO ensure pickle this 'params': params,
+                # TODO ensure pickle this  'metadata': metadata
+            })
+        data = {
+            'chunk_started': self.last_start.strftime(self.str_chunk_time_format)
+        }
+        data.update({'post_process_functions': ppfs})
+        self.notify('CHUNK_FINISHED', data)
+
+    def notify(self, event_name, data):
+        """ notify status to an external URL """
+        if self.notify_url is None:
+            return
+        url = self.notify_url
+        data.update(self.notify_extra_params)
+
+        # default params
+        data['event'] = event_name
+        data['stream_name'] = self.name
+
+        try:
+            requests.post(url=url, headers=self.notify_headers, params=data)
+        except Exception as e:
+            logger.error(f'Error notifying: {e}')
