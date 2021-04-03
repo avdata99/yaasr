@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.11] 2021-04-03
+
+### Notify external apps
+
+Allow adding external URLs and params to notify recording tasks
+
 ## [0.4.0] 2021-02-16
 
 ### Supervidor
