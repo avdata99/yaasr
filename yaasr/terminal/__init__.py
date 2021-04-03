@@ -2,7 +2,6 @@
 Iterate over priority domains and send data to server
 """
 import argparse
-from datetime import time
 import json
 import logging.config
 import os

@@ -1,6 +1,6 @@
-class StreamFolderNotFoud(Exception):
+class StreamFolderNotFound(Exception):
     pass
 
 
-class StreamDataFileNotFoud(Exception):
+class StreamDataFileNotFound(Exception):
     pass

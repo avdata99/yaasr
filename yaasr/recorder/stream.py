@@ -5,7 +5,7 @@ import pytz
 import requests
 from datetime import datetime, timedelta
 from yaasr import STREAMS_FOLDER, __VERSION__
-from yaasr.exceptions import StreamFolderNotFoud, StreamDataFileNotFoud
+from yaasr.exceptions import StreamFolderNotFound, StreamDataFileNotFound
 
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class YStream:
         """ Get the stream folder """
         stream_folder = os.path.join(self.streams_folder, self.name)
         if not os.path.isdir(stream_folder):
-            raise StreamFolderNotFoud(f'Stream not found {stream_folder}')
+            raise StreamFolderNotFound(f'Stream not found {stream_folder}')
 
         return stream_folder
 
@@ -48,7 +48,7 @@ class YStream:
         self.stream_folder = self.get_stream_folder()
         data_file = os.path.join(self.stream_folder, 'data.json')
         if not os.path.isfile(data_file):
-            raise StreamDataFileNotFoud(f'Data file not found {data_file}')
+            raise StreamDataFileNotFound(f'Data file not found {data_file}')
 
         self.data = json.load(open(data_file))
 

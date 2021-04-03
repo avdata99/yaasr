@@ -1,7 +1,7 @@
 import json
 import os
 import pytest
-from yaasr.exceptions import StreamFolderNotFoud, StreamDataFileNotFoud
+from yaasr.exceptions import StreamFolderNotFound, StreamDataFileNotFound
 from yaasr.recorder.stream import YStream
 
 
@@ -13,13 +13,13 @@ class TestYStream:
     def test_fail_stream_folder(self):
         """ Test stream folder exists """
         ys = YStream('not-existent-stream')
-        with pytest.raises(StreamFolderNotFoud):
+        with pytest.raises(StreamFolderNotFound):
             ys.load()
 
     def test_no_data_file_stream(self):
         """ Test data file exists """
         ys = YStream('no-data-file-stream', streams_folder=STREAMS_FOLDER)
-        with pytest.raises(StreamDataFileNotFoud):
+        with pytest.raises(StreamDataFileNotFound):
             ys.load()
 
     def test_bad_json(self):
