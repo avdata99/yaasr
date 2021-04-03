@@ -3,7 +3,6 @@ import logging
 import os
 import pytz
 import requests
-from time import sleep
 from datetime import datetime, timedelta
 from yaasr import STREAMS_FOLDER, __VERSION__
 from yaasr.exceptions import StreamFolderNotFoud, StreamDataFileNotFoud
@@ -25,10 +24,6 @@ class YStream:
         self.destination_folder = destination_folder
         self.timezone = pytz.timezone('UTC')
 
-        # ranges to record (to avoid record 24h)
-        self.record_from_time = None
-        self.record_to_time = None
-
         # chunks saved
         self.saved_chunks = []
 
@@ -39,10 +34,6 @@ class YStream:
         self.notify_url = url
         self.notify_extra_params = params
         self.notify_headers = headers
-
-    def set_record_times(self, from_time=None, to_time=None):
-        self.record_from_time = from_time
-        self.record_to_time = to_time
 
     def get_stream_folder(self):
         """ Get the stream folder """
@@ -81,21 +72,6 @@ class YStream:
             chunk_bytes_size: chunk size to iterate over stream downloaded data
             chunk_time_size: split the audio files is chunk with this time
         """
-        if self.record_to_time is not None:
-            time_now = datetime.now(self.timezone).time()
-            while time_now >= self.record_to_time:
-                logger.info(f'Now {time_now} is late to save')
-                sleep(90)
-                time_now = datetime.now(self.timezone).time()
-                self.notify('LATE_TO_SAVE')
-
-        if self.record_from_time is not None:
-            time_now = datetime.now(self.timezone).time()
-            while time_now < self.record_from_time:
-                logger.info(f'Now {time_now} is early to save')
-                sleep(90)
-                time_now = datetime.now(self.timezone).time()
-                self.notify('EARLY_TO_SAVE')
 
         c = 0
         for stream in self.streams:
@@ -136,11 +112,6 @@ class YStream:
                     self.last_start = last_start
                     f.close()
                     f = open(stream_path, 'wb')
-                elif self.record_to_time is not None:
-                    time_now = datetime.now(self.timezone).time()
-                    if time_now >= self.record_to_time:
-                        logger.info(f'Finished day time {self.record_to_time} at {time_now}')
-                        break
 
             f.close()
             # last chunk
