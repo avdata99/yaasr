@@ -61,6 +61,10 @@ class YStream:
     def generate_stream_path(self, extension):
         now = datetime.now(self.timezone)
         stime = now.strftime(self.str_chunk_time_format)
+        if not os.path.isdir(self.destination_folder):
+            default_folder = '~'
+            logger.error(f'Destination folder doesn\'t exists {self.destination_folder}. Using {default_folder}')
+            self.destination_folder = default_folder
         stream_path = os.path.join(self.destination_folder, f'{self.short_name}-{stime}.{extension}')
         return now, stream_path
 
@@ -74,6 +78,7 @@ class YStream:
         """
 
         c = 0
+        # try all streams
         for stream in self.streams:
 
             c += 1
@@ -158,6 +163,7 @@ class YStream:
         }
         data.update({'post_process_functions': ppfs})
         self.notify('CHUNK_FINISHED', data)
+        logger.info('Chunk finished: finished (?) and notified')
 
     def notify(self, event_name, data={}, error=None):
         """ notify status to an external URL """
@@ -176,6 +182,6 @@ class YStream:
         # Use secure tokens from your server to avoid assholes.
         headers.update(self.notify_headers)
         try:
-            requests.post(url=url, headers=headers, params=data)
+            requests.post(url=url, headers=headers, data=data)
         except Exception as e:
             logger.error(f'Error notifying: {e}')
