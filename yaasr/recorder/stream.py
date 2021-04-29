@@ -131,7 +131,8 @@ class YStream:
             'stream_name': self.name,
             'short_name': self.short_name,
             'started': self.last_start,
-            'finished': datetime.now(self.timezone)
+            'finished': datetime.now(self.timezone),
+            'extension': stream_path.split('.')[-1]
         }
         self.saved_chunks.append(metadata)
 
@@ -161,6 +162,7 @@ class YStream:
         data = {
             'chunk_started': self.last_start.strftime(self.str_chunk_time_format)
         }
+
         data.update({'post_process_functions': ppfs})
         self.notify('CHUNK_FINISHED', data)
         logger.info('Chunk finished: finished (?) and notified')
@@ -177,6 +179,11 @@ class YStream:
         data['stream_name'] = self.name
         data['yaasr_version'] = __VERSION__
         data['error'] = error
+
+        # TODO we can't POST a nested DICTs (e.g. post_process_functions)
+        for key, value in data.items():
+            if type(value) in [list, dict]:
+                data[key] = json.dumps(value)
 
         headers = {'User-Agent': f'YAASR v{__VERSION__}'}
         # Use secure tokens from your server to avoid assholes.
